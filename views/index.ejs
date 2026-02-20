@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head', { title: 'Home' }) %>
+
+  <body
+    class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-100 transition-colors duration-200">
+
+    <nav class="sticky top-0 z-50 glass border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <a href="/"
+            class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition">
+            Notes App
+          </a>
+          <div class="flex items-center space-x-4">
+            <% if (user) { %>
+              <div class="hidden md:flex items-center text-sm font-medium text-gray-600 dark:text-gray-300">
+                <span class="mr-2">Welcome,</span>
+                <span class="text-gray-900 dark:text-white">
+                  <%= user.email %>
+                </span>
+              </div>
+              <a href="/logout"
+                class="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                Logout
+              </a>
+              <% } else { %>
+                <a href="/login"
+                  class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition">Login</a>
+                <a href="/register"
+                  class="px-4 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                  Register
+                </a>
+                <% } %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+      <% if (messages.error) { %>
+        <div
+          class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-700 dark:text-red-400 flex items-center shadow-sm animate-fade-in-down">
+          <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd" />
+          </svg>
+          <%= messages.error %>
+        </div>
+        <% } %>
+          <% if (messages.success) { %>
+            <div
+              class="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 text-green-700 dark:text-green-400 flex items-center shadow-sm animate-fade-in-down">
+              <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd" />
+              </svg>
+              <%= messages.success %>
+            </div>
+            <% } %>
+
+              <!-- Add Note Section -->
+              <% if (user) { %>
+                <div class="max-w-3xl mx-auto mb-12">
+                  <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 transform transition duration-300 hover:shadow-2xl">
+                    <div class="p-6 sm:p-8">
+                      <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                          </path>
+                        </svg>
+                        Create New Note
+                      </h2>
+                      <form action="/notes" method="POST" enctype="multipart/form-data">
+                        <div class="mb-5">
+                          <input type="text" name="title" placeholder="Note Title"
+                            class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 transition duration-200 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 font-medium"
+                            required>
+                        </div>
+                        <div class="mb-5">
+                          <textarea name="content" placeholder="What's on your mind?" rows="4"
+                            class="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:border-indigo-500 dark:focus:border-indigo-400 focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 transition duration-200 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none"
+                            required></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <div class="relative">
+                            <input type="file" name="media" id="media" class="hidden"
+                              onchange="document.getElementById('file-label').textContent = this.files[0]?.name || 'Choose Image'">
+                            <label for="media"
+                              class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm font-medium">
+                              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                              </svg>
+                              <span id="file-label">Add Image</span>
+                            </label>
+                          </div>
+                          <button type="submit"
+                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transform hover:-translate-y-0.5 transition duration-200">
+                            <span>Post Note</span>
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <% } else { %>
+                  <div
+                    class="max-w-2xl mx-auto mb-12 text-center py-12 px-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border border-indigo-100 dark:border-indigo-900 shadow-sm">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">Express Your Thoughts</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-8 text-lg">Join our community to create, share, and
+                      organize your notes.
+                    </p>
+                    <div class="flex justify-center space-x-4">
+                      <a href="/login"
+                        class="px-8 py-3 rounded-xl bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-200 dark:border-indigo-700 shadow-sm hover:shadow-md transition">Login</a>
+                      <a href="/register"
+                        class="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition">Get
+                        Started</a>
+                    </div>
+                  </div>
+                  <% } %>
+
+                    <div
+                      class="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-8 pb-4 border-b border-gray-200 dark:border-gray-700">
+                      <h2 class="text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                        <span
+                          class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Recent
+                          Notes</span>
+                        <span
+                          class="text-sm font-normal text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">
+                          <%= totalNotes || notes.length %>
+                        </span>
+                      </h2>
+                      <div
+                        class="mt-4 sm:mt-0 flex items-center bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <a href="/?page=1&sort=newest<%= locals.search ? '&search=' + encodeURIComponent(locals.search) : '' %>"
+                          class="px-4 py-1.5 rounded-md text-sm font-medium transition <%= sort === 'newest' ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' %>">Newest</a>
+                        <a href="/?page=1&sort=oldest<%= locals.search ? '&search=' + encodeURIComponent(locals.search) : '' %>"
+                          class="px-4 py-1.5 rounded-md text-sm font-medium transition <%= sort === 'oldest' ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' %>">Oldest</a>
+                      </div>
+                    </div>
+
+                    <form action="/" method="GET" class="mb-6">
+                      <input type="hidden" name="sort" value="<%= sort %>">
+                      <div class="relative">
+                        <div
+                          class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"></path>
+                          </svg>
+                        </div>
+                        <input type="text" name="search" value="<%= locals.search || '' %>"
+                          placeholder="Search notes by title or content…"
+                          class="w-full pl-12 pr-32 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 transition duration-200 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 shadow-sm">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 gap-1">
+                          <% if (locals.search) { %>
+                            <a href="/?sort=<%= sort %>"
+                              class="px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition">Clear</a>
+                            <% } %>
+                              <button type="submit"
+                                class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition">
+                                Search
+                              </button>
+                        </div>
+                      </div>
+                    </form>
+
+                    <% if (notes.length> 0) { %>
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
+                        <% notes.forEach(note=> { %>
+                          <div
+                            class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden transition duration-300 transform hover:-translate-y-1 flex flex-col h-full">
+                            <% if(note.media){ %>
+                              <div class="relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-900">
+                                <img src="<%= note.media %>"
+                                  class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                                  alt="Note Image">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                              </div>
+                              <% } %>
+
+                                <div class="p-6 flex-grow flex flex-col">
+                                  <h3
+                                    class="text-xl font-bold text-gray-800 dark:text-white mb-2 leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                    <a href="/notes/<%= note._id %>" class="hover:underline">
+                                      <%= note.title %>
+                                    </a>
+                                  </h3>
+                                  <div
+                                    class="text-gray-600 dark:text-gray-400 mb-6 flex-grow prose prose-sm max-w-none line-clamp-4 dark:prose-invert">
+                                    <%= note.content %>
+                                  </div>
+
+                                  <div class="mt-4">
+                                    <a href="/notes/<%= note._id %>"
+                                      class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-semibold text-sm inline-flex items-center">
+                                      Read More
+                                      <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                      </svg>
+                                    </a>
+                                  </div>
+
+                                  <div
+                                    class="mt-auto flex justify-between items-center pt-4 border-t border-gray-50 dark:border-gray-700/50">
+                                    <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">
+                                      <%= formatDate(note.createdAt) %>
+                                    </span>
+
+                                    <% if (user) { %>
+                                      <form action="/delete/<%= note._id %>" method="POST"
+                                        onsubmit="return confirm('Delete this note?');">
+                                        <button
+                                          class="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition"
+                                          title="Delete Note">
+                                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                          </svg>
+                                        </button>
+                                      </form>
+                                      <% } %>
+                                  </div>
+                                </div>
+                          </div>
+                          <% }) %>
+                      </div>
+                      <% } else { %>
+                        <div class="text-center py-20">
+                          <div
+                            class="bg-gray-100 dark:bg-gray-800 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                            <% if (search) { %>
+                              <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"></path>
+                              </svg>
+                              <% } else { %>
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
+                                  viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                  </path>
+                                </svg>
+                                <% } %>
+                          </div>
+                          <% if (locals.search) { %>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No results for "<%=
+                                locals.search %>"</h3>
+                            <p class="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-4">Try different keywords or
+                              clear the search.</p>
+                            <a href="/?sort=<%= sort %>"
+                              class="inline-block px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition">Clear
+                              Search</a>
+                            <% } else { %>
+                              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No notes yet</h3>
+                              <p class="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">Be the first to share your
+                                thoughts with the world.
+                              </p>
+                              <% } %>
+                        </div>
+                        <% } %>
+
+                          <% if (totalPages> 1) { %>
+                            <div class="mt-16 flex justify-center">
+                              <nav
+                                class="inline-flex rounded-xl shadow-sm bg-white dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700"
+                                aria-label="Pagination">
+                                <% if (currentPage> 1) { %>
+                                  <a href="/?page=<%= currentPage - 1 %>&sort=<%= sort %>"
+                                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-indigo-600 hover:bg-gray-50 transition">
+                                    Previous
+                                  </a>
+                                  <% } else { %>
+                                    <span
+                                      class="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 dark:text-gray-600 cursor-not-allowed">Previous</span>
+                                    <% } %>
+
+                                      <div class="flex space-x-1 mx-2">
+                                        <% for(let i=1; i <=totalPages; i++) { %>
+                                          <a href="/?page=<%= i %>&sort=<%= sort %>"
+                                            class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition <%= currentPage === i ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' %>">
+                                            <%= i %>
+                                          </a>
+                                          <% } %>
+                                      </div>
+
+                                      <% if (currentPage < totalPages) { %>
+                                        <a href="/?page=<%= currentPage + 1 %>&sort=<%= sort %>"
+                                          class="px-4 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                          Next
+                                        </a>
+                                        <% } else { %>
+                                          <span
+                                            class="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 dark:text-gray-600 cursor-not-allowed">Next</span>
+                                          <% } %>
+                              </nav>
+                            </div>
+                            <% } %>
+
+    </div>
+
+    <footer class="mt-20 py-8 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+      <div class="container mx-auto px-4 text-center text-gray-500 dark:text-gray-400 text-sm">
+        &copy; <%= new Date().getFullYear() %> Notes App. Designed with &hearts;
+      </div>
+    </footer>
+    <script>
+      setTimeout(() => {
+        const flashMessages = document.querySelectorAll('.animate-fade-in-down');
+        flashMessages.forEach(msg => {
+          msg.style.transition = 'opacity 0.5s ease-out';
+          msg.style.opacity = '0';
+          setTimeout(() => msg.remove(), 500);
+        });
+      }, 3000);
+    </script>
+    <%- include('partials/theme-toggle') %>
+      <%- include('partials/theme-toggle') %>
+  </body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head', { title: note.title }) %>
+
+    <body
+        class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-100 transition-colors duration-200">
+
+        <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="container mx-auto px-4 py-4">
+                <a href="/"
+                    class="flex items-center text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">
+
+                    Back to Notes
+                </a>
+            </div>
+        </nav>
+
+        <div class="container mx-auto px-4 py-8 max-w-4xl">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
+
+                <% if(note.media){ %>
+                    <div class="relative h-64 md:h-96 w-full">
+                        <img src="<%= note.media %>" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end">
+                            <div class="p-8 text-white w-full">
+                                <h1 class="text-4xl md:text-5xl font-bold mb-2 shadow-black drop-shadow-lg">
+                                    <%= note.title %>
+                                </h1>
+                                <p class="text-gray-200 text-sm font-medium opacity-90">
+                                    Created on <%= formatDate(note.createdAt) %>
+                                        at <%= formatTime(note.createdAt) %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <div
+                            class="p-8 pb-4 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30">
+                            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                                <%= note.title %>
+                            </h1>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">
+                                Created on <%= formatDate(note.createdAt) %>
+                                    at <%= formatTime(note.createdAt) %>
+                            </p>
+                        </div>
+                        <% } %>
+
+                            <div class="p-8 md:p-12">
+                                <div
+                                    class="prose max-w-none text-gray-800 dark:text-gray-200 text-lg leading-relaxed whitespace-pre-wrap dark:prose-invert">
+                                    <%= note.content %>
+                                </div>
+
+                                <% if (user) { %>
+                                    <div
+                                        class="mt-12 pt-8 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+                                        <form action="/delete/<%= note._id %>" method="POST"
+                                            onsubmit="return confirm('Delete this note?');">
+                                            <button class="px-6 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 d
+                                                ark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 
+                                                hover:text-red-700 dark:hover:text-red-300 rounded-lg
+                                                 font-medium transition flex items-center"> Delete Note
+                                            </button>
+
+
+                                        </form>
+                                    </div>
+                                    <% } %>
+                            </div>
+
+            </div>
+        </div>
+
+        <%- include('partials/theme-toggle') %>
+    </body>
+
+</html>
