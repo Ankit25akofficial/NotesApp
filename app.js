@@ -119,8 +119,8 @@ app.post('/register', async (req, res) => {
     req.flash('success', 'Registered successfully');
     res.redirect('/');
   } catch (err) {
-    console.error(err);
-    req.flash('error', 'Error registering user');
+    console.error('REGISTER ERROR:', err.message, err);
+    req.flash('error', 'Error registering user: ' + err.message);
     res.redirect('/register');
   }
 });
@@ -173,7 +173,7 @@ app.post('/notes', isLoggedIn, upload.single('media'), async (req, res) => {
     await Note.create({
       title,
       content,
-      media: req.file ? `uploads/${req.file.filename}` : null,
+      media: req.file ? req.file.path : null,
       user: res.locals.user.userid
     });
 
